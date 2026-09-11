@@ -24,19 +24,23 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <div className="flex min-h-full flex-1">
-      <aside className="flex w-56 flex-col gap-1 border-r border-gray-200 p-4">
-        <p className="mb-4 font-bold">Splash Cove Admin</p>
+      <aside className="flex w-56 flex-col gap-1 border-r border-ocean/10 bg-white p-4">
+        <p className="mb-4 font-[family-name:var(--font-display)] font-bold text-ocean-dark">Splash Cove Admin</p>
         {NAV_ITEMS.map((item) => (
-          <Link key={item.href} href={item.href} className="rounded px-3 py-2 text-sm hover:bg-gray-100">
+          <Link
+            key={item.href}
+            href={item.href}
+            className="rounded-lg px-3 py-2 text-sm text-navy transition hover:bg-ocean/10"
+          >
             {item.label}
           </Link>
         ))}
-        <div className="mt-auto pt-4 text-xs text-gray-500">
+        <div className="mt-auto pt-4 text-xs text-navy/50">
           <p className="mb-2 truncate">{user.email}</p>
           <AdminSignOutButton />
         </div>
       </aside>
-      <div className="flex-1 p-6">{children}</div>
+      <div className="flex-1 bg-sky-mist p-6">{children}</div>
     </div>
   );
 }

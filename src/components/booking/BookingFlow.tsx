@@ -112,34 +112,43 @@ export function BookingFlow({ ticketType }: { ticketType: TicketType }) {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <h1 className="text-2xl font-bold">{ticketType.name}</h1>
-        <p className="text-gray-600">{ticketType.description}</p>
+        <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold text-navy">{ticketType.name}</h1>
+        <p className="mt-1 text-navy/70">{ticketType.description}</p>
       </div>
 
-      <ol className="flex gap-4 text-sm font-medium text-gray-400">
+      <ol className="flex flex-wrap gap-2 text-sm font-medium">
         {(['slot', 'addons', 'details', 'review'] as Step[]).map((s, i) => (
-          <li key={s} className={step === s ? 'text-black' : ''}>
+          <li
+            key={s}
+            className={`rounded-full px-3 py-1 ${
+              step === s ? 'bg-ocean text-white' : 'bg-white text-navy/50'
+            }`}
+          >
             {i + 1}. {s[0].toUpperCase() + s.slice(1)}
           </li>
         ))}
       </ol>
 
-      {error && <p className="rounded bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+      {error && <p className="rounded-xl bg-coral/10 p-3 text-sm text-coral-dark">{error}</p>}
 
       {step === 'slot' && (
-        <section className="flex flex-col gap-4">
-          <h2 className="text-lg font-semibold">Choose a date &amp; slot</h2>
+        <section className="flex flex-col gap-4 rounded-2xl bg-white p-6 shadow-sm">
+          <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-navy">
+            Choose a date &amp; slot
+          </h2>
           {[...slotsByDate.entries()].map(([date, dateSlots]) => (
             <div key={date}>
-              <p className="mb-2 font-medium">{date}</p>
+              <p className="mb-2 font-medium text-navy">{date}</p>
               <div className="flex flex-wrap gap-2">
                 {dateSlots.map((slot) => (
                   <button
                     key={slot.id}
                     disabled={slot.sold_out || slot.is_blackout}
                     onClick={() => setSelectedSlotId(slot.id)}
-                    className={`rounded border px-3 py-2 text-sm ${
-                      selectedSlotId === slot.id ? 'border-black bg-black text-white' : 'border-gray-300'
+                    className={`rounded-xl border-2 px-3 py-2 text-sm font-medium transition ${
+                      selectedSlotId === slot.id
+                        ? 'border-ocean bg-ocean text-white'
+                        : 'border-ocean/15 text-navy hover:border-ocean/40'
                     } ${slot.sold_out || slot.is_blackout ? 'cursor-not-allowed opacity-40' : ''}`}
                   >
                     {slot.start_time ? slot.start_time.slice(0, 5) : 'All day'}
@@ -150,10 +159,10 @@ export function BookingFlow({ ticketType }: { ticketType: TicketType }) {
               </div>
             </div>
           ))}
-          {slots.length === 0 && <p className="text-gray-500">No dates available right now.</p>}
+          {slots.length === 0 && <p className="text-navy/50">No dates available right now.</p>}
 
           <div className="flex items-center gap-3">
-            <label htmlFor="quantity" className="font-medium">
+            <label htmlFor="quantity" className="font-medium text-navy">
               Guests
             </label>
             <input
@@ -162,14 +171,14 @@ export function BookingFlow({ ticketType }: { ticketType: TicketType }) {
               min={ticketType.min_guests || 1}
               value={quantity}
               onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
-              className="w-20 rounded border border-gray-300 px-2 py-1"
+              className="w-20 rounded-lg border border-ocean/20 px-2 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ocean"
             />
           </div>
 
           <button
             disabled={!selectedSlot}
             onClick={() => setStep('addons')}
-            className="ml-auto rounded bg-black px-6 py-2 text-white disabled:opacity-40"
+            className="ml-auto rounded-full bg-coral px-6 py-2 font-semibold text-white transition hover:bg-coral-dark disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral"
           >
             Next
           </button>
@@ -177,13 +186,15 @@ export function BookingFlow({ ticketType }: { ticketType: TicketType }) {
       )}
 
       {step === 'addons' && (
-        <section className="flex flex-col gap-4">
-          <h2 className="text-lg font-semibold">Add-ons (optional)</h2>
+        <section className="flex flex-col gap-4 rounded-2xl bg-white p-6 shadow-sm">
+          <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-navy">
+            Add-ons (optional)
+          </h2>
           {addons.map((addon) => (
-            <div key={addon.id} className="flex items-center justify-between rounded border border-gray-200 p-3">
+            <div key={addon.id} className="flex items-center justify-between rounded-xl border border-ocean/10 p-3">
               <div>
-                <p className="font-medium">{addon.name}</p>
-                <p className="text-sm text-gray-500">{formatCentsToCurrency(addon.price_cents)}</p>
+                <p className="font-medium text-navy">{addon.name}</p>
+                <p className="text-sm text-navy/60">{formatCentsToCurrency(addon.price_cents)}</p>
               </div>
               <input
                 type="number"
@@ -192,15 +203,21 @@ export function BookingFlow({ ticketType }: { ticketType: TicketType }) {
                 onChange={(e) =>
                   setAddonQuantities((prev) => ({ ...prev, [addon.id]: Math.max(0, Number(e.target.value)) }))
                 }
-                className="w-20 rounded border border-gray-300 px-2 py-1"
+                className="w-20 rounded-lg border border-ocean/20 px-2 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ocean"
               />
             </div>
           ))}
           <div className="ml-auto flex gap-2">
-            <button onClick={() => setStep('slot')} className="rounded border border-gray-300 px-6 py-2">
+            <button
+              onClick={() => setStep('slot')}
+              className="rounded-full border-2 border-ocean/30 px-6 py-2 font-semibold text-ocean-dark transition hover:border-ocean"
+            >
               Back
             </button>
-            <button onClick={() => setStep('details')} className="rounded bg-black px-6 py-2 text-white">
+            <button
+              onClick={() => setStep('details')}
+              className="rounded-full bg-coral px-6 py-2 font-semibold text-white transition hover:bg-coral-dark"
+            >
               Next
             </button>
           </div>
@@ -208,32 +225,38 @@ export function BookingFlow({ ticketType }: { ticketType: TicketType }) {
       )}
 
       {step === 'details' && (
-        <section className="flex flex-col gap-4">
-          <h2 className="text-lg font-semibold">Your details</h2>
+        <section className="flex flex-col gap-4 rounded-2xl bg-white p-6 shadow-sm">
+          <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-navy">Your details</h2>
           <input
             placeholder="Full name"
             value={guestName}
             onChange={(e) => setGuestName(e.target.value)}
-            className="rounded border border-gray-300 px-3 py-2"
+            className="rounded-lg border border-ocean/20 px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ocean"
           />
           <input
             placeholder="Email"
             type="email"
             value={guestEmail}
             onChange={(e) => setGuestEmail(e.target.value)}
-            className="rounded border border-gray-300 px-3 py-2"
+            className="rounded-lg border border-ocean/20 px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ocean"
           />
           <input
             placeholder="Phone (optional)"
             value={guestPhone}
             onChange={(e) => setGuestPhone(e.target.value)}
-            className="rounded border border-gray-300 px-3 py-2"
+            className="rounded-lg border border-ocean/20 px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ocean"
           />
           <div className="ml-auto flex gap-2">
-            <button onClick={() => setStep('addons')} className="rounded border border-gray-300 px-6 py-2">
+            <button
+              onClick={() => setStep('addons')}
+              className="rounded-full border-2 border-ocean/30 px-6 py-2 font-semibold text-ocean-dark transition hover:border-ocean"
+            >
               Back
             </button>
-            <button onClick={() => setStep('review')} className="rounded bg-black px-6 py-2 text-white">
+            <button
+              onClick={() => setStep('review')}
+              className="rounded-full bg-coral px-6 py-2 font-semibold text-white transition hover:bg-coral-dark"
+            >
               Review
             </button>
           </div>
@@ -241,9 +264,9 @@ export function BookingFlow({ ticketType }: { ticketType: TicketType }) {
       )}
 
       {step === 'review' && (
-        <section className="flex flex-col gap-4">
-          <h2 className="text-lg font-semibold">Review &amp; pay</h2>
-          <div className="rounded border border-gray-200 p-4 text-sm">
+        <section className="flex flex-col gap-4 rounded-2xl bg-white p-6 shadow-sm">
+          <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-navy">Review &amp; pay</h2>
+          <div className="rounded-xl bg-sky-mist p-4 text-sm text-navy">
             <div className="flex justify-between">
               <span>
                 {ticketType.name} x{quantity}
@@ -264,22 +287,25 @@ export function BookingFlow({ ticketType }: { ticketType: TicketType }) {
                   </div>
                 );
               })}
-            <div className="mt-2 flex justify-between border-t border-gray-200 pt-2 font-semibold">
+            <div className="mt-2 flex justify-between border-t border-ocean/15 pt-2 font-semibold">
               <span>Total</span>
-              <span>{formatCentsToCurrency(grandTotalCents)}</span>
+              <span className="text-ocean-dark">{formatCentsToCurrency(grandTotalCents)}</span>
             </div>
           </div>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-navy/50">
             You will be redirected to Maya to complete payment (cards, e-wallets, QRPH).
           </p>
           <div className="ml-auto flex gap-2">
-            <button onClick={() => setStep('details')} className="rounded border border-gray-300 px-6 py-2">
+            <button
+              onClick={() => setStep('details')}
+              className="rounded-full border-2 border-ocean/30 px-6 py-2 font-semibold text-ocean-dark transition hover:border-ocean"
+            >
               Back
             </button>
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="rounded bg-black px-6 py-2 text-white disabled:opacity-50"
+              className="rounded-full bg-coral px-6 py-2 font-semibold text-white transition hover:bg-coral-dark disabled:opacity-50"
             >
               {submitting ? 'Redirecting…' : 'Pay with Maya'}
             </button>

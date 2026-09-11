@@ -1,26 +1,58 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f3fbfc;
+  --foreground: #0b2530;
+
+  /* Splash Cove brand palette */
+  --color-ocean: #0e7c86;
+  --color-ocean-dark: #0a5c63;
+  --color-aqua: #3fd8e0;
+  --color-coral: #ff7a47;
+  --color-coral-dark: #e85f2e;
+  --color-sun: #ffc94a;
+  --color-sky-mist: #f3fbfc;
+  --color-navy: #0b2530;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-ocean: var(--color-ocean);
+  --color-ocean-dark: var(--color-ocean-dark);
+  --color-aqua: var(--color-aqua);
+  --color-coral: var(--color-coral);
+  --color-coral-dark: var(--color-coral-dark);
+  --color-sun: var(--color-sun);
+  --color-sky-mist: var(--color-sky-mist);
+  --color-navy: var(--color-navy);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), Arial, Helvetica, sans-serif;
 }
+
+/* Hero wave drift — one deliberate motion touch, disabled for reduced-motion users */
+@keyframes wave-drift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-wave {
+  animation: wave-drift 14s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-wave {
+    animation: none;
+  }
+}
+
