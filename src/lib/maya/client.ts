@@ -55,12 +55,13 @@ export interface MayaCheckoutResponse {
 }
 
 function getAuthHeader() {
-  const secretKey = process.env.MAYA_SECRET_KEY;
-  if (!secretKey) {
-    throw new Error('MAYA_SECRET_KEY is not set. Add sandbox keys to .env.local (see .env.example).');
+  // Maya's Create Checkout request authenticates with the PUBLIC API key
+  // (not the secret key) via HTTP Basic auth, username = public key, blank password.
+  const publicKey = process.env.MAYA_PUBLIC_KEY;
+  if (!publicKey) {
+    throw new Error('MAYA_PUBLIC_KEY is not set. Add sandbox keys to .env.local (see .env.example).');
   }
-  // Maya's Checkout API uses HTTP Basic auth with the secret key as username, blank password.
-  const encoded = Buffer.from(`${secretKey}:`).toString('base64');
+  const encoded = Buffer.from(`${publicKey}:`).toString('base64');
   return `Basic ${encoded}`;
 }
 
